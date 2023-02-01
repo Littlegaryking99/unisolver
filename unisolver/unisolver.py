@@ -8,15 +8,9 @@ from quadprog import solve_qp as quad_solve
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
-from dynamics import Dyn
-from agent import Agent
-from obstacle import Sphere, Ellipsoid, Wall
 import gurobipy as gp
 from gurobipy import GRB
 from gurobipy import *
-from goal import Goal
-from sim_plots import Cbf_data, Clf_data, ColorManager
-from params import *
 import scipy.sparse as spa
 from scipy.sparse import csr_matrix, lil_matrix
 import constants as const
