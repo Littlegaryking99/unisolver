@@ -21,6 +21,22 @@ User can also call a list of *QpVariable* objects by loop definition::
     x_name = ['x_0', 'x_1', 'x_2']
     x = [QpVariable(x_name[i], 0, 10) for i in range(3)]
 
+User can also a *QpMVariable* to input a matrix of QpVarible by specifying size, name and bounds::
+
+    import unisolver
+    b = QpMVariable("b", [2,2], 0, 3, value = 1)
+    b = np.asarray(b)            
+
+The structure of *QpMVariable* is initialized with a numpy array, which supports some numpy functions, including *tr()*, *dot* ::
+
+    import unisolver
+    c = QpMVariable("c", [2,2], 0, 3, value = 2)
+    c1 = np.asarray(c)
+    d = np.array((2,2)).reshape(2,1)
+    c1.dot(d)
+    #[[2*c00 + 2*c01 + 0]
+    # [2*c10 + 2*c11 + 0]]
+
 If the name of problem is not specified, it will 
 automatically named by **NoName**::
 

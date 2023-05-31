@@ -11,6 +11,12 @@ from matplotlib.backends.backend_pdf import PdfPages
 import gurobipy as gp
 from gurobipy import GRB
 from gurobipy import *
+import cvxopt
+from cvxopt import matrix
+from cvxopt import solvers
+import mosek
+import cvxopt.msk
+import cvxpy as cp
 import scipy.sparse as spa
 from scipy.sparse import csr_matrix, lil_matrix
 import constants as const
@@ -85,9 +91,64 @@ class QpElement:
     def __eq__(self, ele):
         return QpExpression(self) == ele
 
+class QpMElement:
+    def __init__(self, name, dim, value):
+        self.name = name
+        self.dim = dim
+        self.value = value
+        self.modified = True
+        self.hash = id(self)
+
+    def __hash__(self):
+        return self.hash
+    
+    def __str__(self):
+        return self.name
+
+    def __pos__(self):
+        return self
+
+    def __neg__(self):
+        self.value = -self.value
+        return self
+
+    def isvalid(self, ele):
+        if self.dim == ele.dim:
+            return True
+        else:
+            return False
+    
+    def __add__(self, ele):
+        # return self.value + ele.value
+        if self.dim == ele.dim:
+            return QpExpression(self) + ele
+        else:
+            return "The dimension of two variables are not coincide"
+    
+    def __sub__(self, ele):
+        if self.dim == ele.dim:
+            return QpExpression(self) - ele
+        else:
+            return "The dimension of two variables are not coincide"
+
+    def __mul__(self, ele):
+        return QpExpression(self) * ele
+
+    def __div__(self, ele):
+        return QpExpression(self) / ele
+
+    def __le__(self, ele):
+        return QpExpression(self) <= ele
+
+    def __ge__(self, ele):
+        return QpExpression(self) >= ele
+
+    def __eq__(self, ele):
+        return QpExpression(self) == ele
+
 class QpVariable(QpElement):
     """
-    >>> x = QpVariable('x', lowbound = -10, upbound =  10)
+    >>> x = QpVariable('x', lowbound = -10, upbound = 10)
     """
     def __init__(self, name = "NoName", lowbound = None, upbound = None, value = 0):
         QpElement.__init__(self, name, value)
@@ -129,7 +190,36 @@ class QpVariable(QpElement):
     def bounds(self, low, up):
         self.lowbound = low
         self.upbound = up
+
+class QpMVariable():
+    def __init__(self, name = "NoName", dim = [1, 1], lb = None, ub = None, value = 0):
+        self.name = name
+        self.dim = dim
+        self.lowbound = lb
+        self.upbound = ub
+        self.value = value
+        self.dim = dim
+        self.index1 = 0
+        self.index2 = 0
+        self.p = np.dtype((QpVariable))
+        # self.nvarlist = np.array([QpVariable(self.name+str(i), lowbound = -10, upbound = 10, value = self.value) for i in range(self.dim)])
     
+    def __repr__(self):
+        return f"{self.name}: {self.__class__.__name__} dim: {self.dim}"
+
+    def __array__(self):
+        return np.array([[QpVariable(self.name+str(j)+str(i), lowbound = self.lowbound, upbound = self.upbound, value = self.value) for i in range(int(self.dim[0]))] for j in range(int(self.dim[1]))])
+    
+    def getLb(self):
+        return self.lowbound
+    
+    def getUb(self):
+        return self.upbound
+
+    def bounds(self, low, up):
+        self.lowbound = low
+        self.upbound = up
+
 class QpExpression(dict):
     """
     A linear(quadratic) combination of class: QpVariable
@@ -186,6 +276,15 @@ class QpExpression(dict):
             self[key] = y
         else:
             self[key] = value
+    
+    def addMterm(self, key, value):
+        y = self.get(key, 0)
+        if y:
+            y += value
+            self[key] = y
+        else: 
+            self[key]= value
+        
 
     def __str__(self, constant=1):
         s = ""
@@ -242,6 +341,8 @@ class QpExpression(dict):
             self.constant += other.constant
             for v, x in other.items():
                 self.addterm(v, x)
+        elif isinstance(other, QpMElement):
+            self.addterm(other, 1)
         elif isinstance(other, dict):
             for e in other.values():
                 self.addInPlace(e)
@@ -287,7 +388,8 @@ class QpExpression(dict):
         return self.copy().subInPlace(other)
 
     def __mul__(self, other):
-        e = self.emptyCopy()
+        # e = self.emptyCopy()
+        e = QpExpression()
         if isinstance(other, QpExpression):
             e.constant = self.constant * other.constant
             if len(other):
@@ -637,6 +739,8 @@ class QpProblem:
             sol = self.quadSolve(numofvar)
         elif self.solver == "Gurobi":
             sol = self.gurobiSolve(numofvar)
+        elif self.solver == "CVXOPT":
+            sol = self.cvxSolve(numofvar)
         print(sol)
         # print(muldict)
         # if self.solver == "Gurobi":
@@ -658,6 +762,21 @@ class QpProblem:
         meq = 0
         sol = quad_solve(qp_G, qp_a, qp_C, qp_b, meq)[0].reshape(numofvar, 1)
         return sol
+
+    def cvxSolve(self, numofvar = 0):
+        P = matrix(self.P)
+        q = matrix(self.q)
+        G = matrix(self.G)
+        h = matrix(self.h)
+        solvers.options['show_progress'] = False
+        sol = solvers.qp(P,q,G,h)['x'][0:numofvar]
+        return sol
+
+    def mosekSolve(self, numofvar = 0):
+        P = matrix(self.P)
+        q = matrix(self.q)
+        G = matrix(self.G)
+        h = matrix(self.h)
 
     def gurobiSolve(self, numofvar = 0):
         ubs, lbs = np.zeros((numofvar,1)), np.zeros((numofvar,1))
@@ -730,19 +849,80 @@ class QpProblem:
         return len(self.constraints)
 
 
+
+class tmpclass():
+    pass
+
 def main():
     # doctest.testmod(verbose = True)
-    
-    prob = QpProblem("myProblem", "Gurobi")
-    x = QpVariable("x", 0, 3)
-    y = QpVariable("y", 0, 1)
-    a = 1
-    prob += x ** 2 * 2 + y ** 2 * 5 + x + y * 5
-    prob += y + x * a <= 3
+    # arr = MArray(5, 1)
+    # print(arr)
+    # x_name = ['x_0', 'x_1', 'x_2']
+    # x = [QpVariable(x_name[i], lowbound = 0, upbound = 10) for i in range(3) ]
+    # c = QpExpression([(x[0],1), (x[1],-3), (x[2],4)], constant = 3)
+    # print(c.toDict())
+    # a = np.array(((3,1),(1,1)))
+    # b = np.array((3,2)).reshape(2,1)
+    # print("P = ")
+    # print(a)
+    # print("q = ")
+    # print(b)
+    # print(c)
+    # a = 3
+    # prob = QpProblem("myProblem", "CVXOPT")
+    # x = QpVariable("x", 0, 3)
+    # y = QpVariable("y", 0, 1)
+    # prob += x ** 2 * 2 + y ** 2 * 5 + ((x + y * 5) * 2) * a
+    # prob += y + x <= 3
+    # prob += x + y * 2 >= 2
+    # prob.solve()
+
     # print(prob.constraints["c0"].toDict())
-    prob += x + y >= 2
-    prob.solve()
-    
+    # a = np.array(([[1,2]]))
+    # a += ([3,4])
+    # print(a)
+    # x = QpVariable('x', lowbound = -10, upbound = 10)
+    # y = QpVariable('y', lowbound = -10, upbound = 10)
+    # z = np.array((x,y)).reshape(2,1)
+    # print(z)
+    b = QpMVariable("b", [2,2], 0, 3, value = 1)
+    b = np.asarray(b)
+    c = QpMVariable("c", [2,2], 0, 3, value = 2)
+    c1 = np.asarray(c)
+    d = np.array((2,2)).reshape(2,1)
+    print(c1.dot(d))
+    # d = c1[0][0] + c1[1][1]
+    # print('-----')
+    # print(c1[0][0])
+    # print(type(c1[0][0]))
+    # print(c1[0][0].ToDict)
+    # print(c1[1][1])
+    # print(b1)
+    # print(c1)
+    # d1 = b1+c1
+    # e1 = d1.T
+    # print(e1)
+    # print(b1)
+    # b11 = b1[0][0]
+    # c11 = c1[0][0]
+    # d11 = d1[0][0]
+    # tmp = QpVariable('a')
+    # tmp1 = QpVariable('b')
+    # tmp2 = tmp1 * tmp
+    # print(b11)
+    # print(c11)
+    # print(b11.name)
+    # print(tmp2)
+    # print(np.trace(d1))
+    # print('-----')
+
+    # print(d)
+    # d1 = b1+c1 * 2
+    # print(d1)
+    # print(d1[0][0]+d1[1][1])
+    # print(np.trace(d1))
+    # q = np.dtype("tmp", tmpclass)
+
 
 if __name__ == '__main__':
     start_time = time.time()

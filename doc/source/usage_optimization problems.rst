@@ -23,7 +23,7 @@ Quadratic Programming problems
 **Quadratic programming (QP)** is the process of solving some mathematical optimization problems 
 involving quadratic functions. Specifically, we seek to optimize (minimize or maximize) 
 multivariate quadratic functions subject to linear constraints of variables. Quadratic 
-programming is a nonlinear programming. It can be written as 
+programming is a nonlinear programming problem. It can be written as 
 
 .. math::
     minimize \ \ \frac{1}{2}x^TPx &+ q^Tx + r \\
