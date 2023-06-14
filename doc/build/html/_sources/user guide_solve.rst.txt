@@ -11,8 +11,20 @@ For most cases, the model can be solved by *solve* function::
     x = QpVariable("x", 0, 3)
     y = QpVariable("y", 0, 1)
     prob += x ** 2 * 2 + y ** 2 * 5 + x + y * 5
+    prob.P
+    #[[2 0]
+    # [0 2]]
+    prob.q
+    #[[1]
+    # [5]]
     prob += y + x <= 3
     prob += x + y >= 2
+    prob.G
+    #[[1 1]
+    # [-1 -1]]
+    prob.h
+    #[[3]
+    # [-2]]
     prob.solve()
     #[[2.]
     # [0.]]
@@ -23,10 +35,24 @@ For different solvers, unisolver will provide different data types due to corres
     x = QpVariable("x", 0, 3)
     y = QpVariable("y", 0, 1)
     prob += x ** 2 * 2 + y ** 2 * 5 + x + y * 5
+    prob.P
+    #[[2 0]
+    # [0 2]]
+    prob.q
+    #[[1]
+    # [5]]
     prob += y + x <= 3
     prob += x + y >= 2
+    prob.G
+    #[[1 1]
+    # [-1 -1]]
+    prob.h
+    #[[3]
+    # [-2]]
     prob.solve()
-    #[1.9999558636043262, 4.413643994956694e-05]
+    In that case, we can quickly implement the solver and get the final answer.
+    #[[1.9999558636043262]
+    # [4.413643994956694e-05]]
 
 If the problem is infeasible, it will print out default error massage for each solver.
 

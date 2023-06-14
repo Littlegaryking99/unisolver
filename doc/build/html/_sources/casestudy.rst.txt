@@ -12,7 +12,8 @@ function which are suitable for every situations,
 we can somehow use energy-like form to test whether 
 it satisfy the requirements of Lyapunov or Barrier function.
 
-In the following part, we illustrate an example:
+In the following part, we illustrate an example (The example is cited from 
+`Github <www.github.com/HybridRobotics/CBF-CLF-Helper/blob/master/Manual_v1.pdf>`_):
 
 For an adaptive cruise-control problem,
 whose general form of dynamics of the systems are given by:
@@ -77,3 +78,6 @@ Along with following constraints:
 
 By solving this QP problem with unisolver, we can finally get the answer.
 
+Reference
+----------
+1. A\. D\. Ames, X\. Xu, J\. W\. Grizzle and P\. Tabuada, "Control Barrier Function Based Quadratic Programs for Safety Critical Systems," in IEEE Transactions on Automatic Control, vol. 62, no. 8, pp. 3861-3876, Aug. 2017, doi: 10.1109/TAC.2016.2638961.

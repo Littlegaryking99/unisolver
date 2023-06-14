@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Case Study &mdash; unisolver 0.0.1 documentation</title>
+  <title>Case Study &mdash; unisolver 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -40,7 +40,10 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user%20guide.html">User Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Case Study</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -78,7 +81,8 @@ degrees. Although there are no specific Barrier
 function which are suitable for every situations,
 we can somehow use energy-like form to test whether
 it satisfy the requirements of Lyapunov or Barrier function.</p>
-<p>In the following part, we illustrate an example:</p>
+<p>In the following part, we illustrate an example (The example is cited from
+<a class="reference external" href="www.github.com/HybridRobotics/CBF-CLF-Helper/blob/master/Manual_v1.pdf">Github</a>):</p>
 <p>For an adaptive cruise-control problem,
 whose general form of dynamics of the systems are given by:</p>
 <div class="math notranslate nohighlight">
@@ -125,6 +129,12 @@ whose general form of dynamics of the systems are given by:</p>
 <div class="math notranslate nohighlight">
 \[ \begin{align}\begin{aligned}\frac{2(v-v_d)}{m}u - s &amp; \leq (v-v_d)(\frac{2F_r}{m} - \lambda(v-v_d))\\\frac{T+\frac{v-v_0}{c_dg}}{m} u \leq h2 &amp; = \frac{T+\frac{v-v_0}{c_dg}F_r}{m} + \gamma((v_0-v) + z - Tv - \frac{(v-v_0)^2}{2c_dg})\\u &amp;\geq -mc_ag\\u &amp;\leq mc_dg\end{aligned}\end{align} \]</div>
 <p>By solving this QP problem with unisolver, we can finally get the answer.</p>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline"></a></h2>
+<ol class="arabic simple">
+<li><p>A. D. Ames, X. Xu, J. W. Grizzle and P. Tabuada, “Control Barrier Function Based Quadratic Programs for Safety Critical Systems,” in IEEE Transactions on Automatic Control, vol. 62, no. 8, pp. 3861-3876, Aug. 2017, doi: 10.1109/TAC.2016.2638961.</p></li>
+</ol>
+</section>
 </section>
 
 
@@ -137,7 +147,7 @@ whose general form of dynamics of the systems are given by:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Yitian Ren.</p>
+    <p>&#169; Copyright 2023, Yitian Ren, Roberto Tron.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

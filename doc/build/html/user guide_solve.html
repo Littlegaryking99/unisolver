@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>How to solve the model &mdash; unisolver 0.0.1 documentation</title>
+  <title>How to solve the model &mdash; unisolver 0.1.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -86,8 +86,20 @@ a vary simple way. In this section we will show how to solve the model.</p>
 <span class="n">x</span> <span class="o">=</span> <span class="n">QpVariable</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">QpVariable</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">prob</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">5</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">P</span>
+<span class="c1">#[[2 0]</span>
+<span class="c1"># [0 2]]</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">q</span>
+<span class="c1">#[[1]</span>
+<span class="c1"># [5]]</span>
 <span class="n">prob</span> <span class="o">+=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">3</span>
 <span class="n">prob</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">G</span>
+<span class="c1">#[[1 1]</span>
+<span class="c1"># [-1 -1]]</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">h</span>
+<span class="c1">#[[3]</span>
+<span class="c1"># [-2]]</span>
 <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 <span class="c1">#[[2.]</span>
 <span class="c1"># [0.]]</span>
@@ -98,10 +110,24 @@ a vary simple way. In this section we will show how to solve the model.</p>
 <span class="n">x</span> <span class="o">=</span> <span class="n">QpVariable</span><span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
 <span class="n">y</span> <span class="o">=</span> <span class="n">QpVariable</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">prob</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">y</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="mi">5</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">P</span>
+<span class="c1">#[[2 0]</span>
+<span class="c1"># [0 2]]</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">q</span>
+<span class="c1">#[[1]</span>
+<span class="c1"># [5]]</span>
 <span class="n">prob</span> <span class="o">+=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">3</span>
 <span class="n">prob</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="mi">2</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">G</span>
+<span class="c1">#[[1 1]</span>
+<span class="c1"># [-1 -1]]</span>
+<span class="n">prob</span><span class="o">.</span><span class="n">h</span>
+<span class="c1">#[[3]</span>
+<span class="c1"># [-2]]</span>
 <span class="n">prob</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
-<span class="c1">#[1.9999558636043262, 4.413643994956694e-05]</span>
+<span class="n">In</span> <span class="n">that</span> <span class="n">case</span><span class="p">,</span> <span class="n">we</span> <span class="n">can</span> <span class="n">quickly</span> <span class="n">implement</span> <span class="n">the</span> <span class="n">solver</span> <span class="ow">and</span> <span class="n">get</span> <span class="n">the</span> <span class="n">final</span> <span class="n">answer</span><span class="o">.</span>
+<span class="c1">#[[1.9999558636043262]</span>
+<span class="c1"># [4.413643994956694e-05]]</span>
 </pre></div>
 </div>
 <p>If the problem is infeasible, it will print out default error massage for each solver.</p>
@@ -120,7 +146,7 @@ how unisolver can be used to solve real-life problems.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2023, Yitian Ren.</p>
+    <p>&#169; Copyright 2023, Yitian Ren, Roberto Tron.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

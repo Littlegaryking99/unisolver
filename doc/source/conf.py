@@ -18,11 +18,11 @@
 # -- Project information -----------------------------------------------------
 
 project = 'unisolver'
-copyright = '2023, Yitian Ren'
-author = 'Yitian Ren'
+copyright = '2023, Yitian Ren, Roberto Tron'
+author = 'Yitian Ren, Roberto Tron'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.1.0'
 
 
 # -- General configuration ---------------------------------------------------

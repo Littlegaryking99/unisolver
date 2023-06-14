@@ -202,6 +202,7 @@ class QpMVariable():
         self.index1 = 0
         self.index2 = 0
         self.p = np.dtype((QpVariable))
+        
         # self.nvarlist = np.array([QpVariable(self.name+str(i), lowbound = -10, upbound = 10, value = self.value) for i in range(self.dim)])
     
     def __repr__(self):
@@ -804,6 +805,7 @@ class QpProblem:
         status = []
         for i in range(numofvar):
             status.append(model.getVars()[i].X)
+        status.reshape((numofvar,1))
         return status
 
     def startClock(self):
@@ -885,12 +887,16 @@ def main():
     # y = QpVariable('y', lowbound = -10, upbound = 10)
     # z = np.array((x,y)).reshape(2,1)
     # print(z)
-    b = QpMVariable("b", [2,2], 0, 3, value = 1)
-    b = np.asarray(b)
-    c = QpMVariable("c", [2,2], 0, 3, value = 2)
+    c = QpMVariable("c", [2,1], 0, 3, value = 2)
     c1 = np.asarray(c)
-    d = np.array((2,2)).reshape(2,1)
-    print(c1.dot(d))
+    # d = np.array((2,2)).reshape(2,1)
+    # b = QpMVariable("b", [2,2], 0, 3, value = 1)
+    # b1 = np.asarray(b)
+    # print(b)
+    # print(type(b))
+    # print(type(b1))
+    P = np.array((2, 0, 0, 2)).reshape(2,2)
+    print(c1.T)
     # d = c1[0][0] + c1[1][1]
     # print('-----')
     # print(c1[0][0])

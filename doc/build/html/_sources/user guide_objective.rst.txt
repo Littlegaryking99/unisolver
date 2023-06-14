@@ -17,8 +17,26 @@ In general, we use **+=** to add objective function::
     prob += x ** 2 * 2 + y ** 2 * 5 + x + y * 5
     prob.objective
     #x + 2*x**2 + 5*y + 5*y**2
+    prob.P
+    #[[2 0]
+    # [0 5]]
+    prob.q
+    #[[1]
+    # [5]]
+
+
+And it is also supported to add objective function in standard form::
+
+    import unisolver
+    import numpy as np
+    prob = unisolver.QpProblem("myproblem", "quadprog")
+    P = np.array((2, 0, 0, 2)).reshape(2,2)
+    q = np.array((1, 5)).reshape(2,1)
+    c = QpMVariable("c", [2,1], 0, 3, value = 2)
+    prob += c.T.dot(P).dot(c) + q.T.dot(c)
 
 The right part of **+=** will be recognized as 
+
 a *QpExpression* object. It can transfer into list of dictionary format::
 
     import unisolver
