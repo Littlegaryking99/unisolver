@@ -45,16 +45,16 @@ a *QpExpression* object. It can transfer into list of dictionary format::
     prob.objective.toDict()
     #[{'name': 'x**2', 'value': 2}, {'name': 'y**2', 'value': 5}, {'name': 'x', 'value': 1}, {'name': 'y', 'value': 5}]
 
-If user input wrong objective function, they can directly overwrite 
-the objective function by **+=**::
+If there exists objective function, they can directly add to original
+objective function by **+=**::
 
     import unisolver
     prob = unisolver.QpProblem("myproblem", "quadprog")
     prob += x ** 2 * 2 + y ** 2 * 5 + x + y * 5
     prob.objective
     #x + 2*x**2 + 5*y + 5*y**2
-    prob += x ** 2 * 2 + y ** 2 * 5 + x * 2 + y * 5
-    #2*x + 2*x**2 + 5*y + 5*y**2
+    prob += x * 2
+    #3*x + 2*x**2 + 5*y + 5*y**2
 
 If the objective function not in linear or quadratic form, it will return warning message::
 

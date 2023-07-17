@@ -679,18 +679,18 @@ class QpProblem:
 
     def setObjective(self, obj):
         if self.solver  == "Gurobi":
-            self.mod.setObjective(obj)
+            self.mod.setObjective(obj + self.objective)
         else:
-            if isinstance(obj, QpVariable):
-                # allows the user to add a LpVariable as an objective
-                obj = obj + 0.0
-            try:
-                obj = obj.constraint
-                name = obj.name
-            except AttributeError:
-                name = None
-            self.objective = obj
-            self.objective.name = name
+            # if isinstance(obj, QpVariable):
+            #     # allows the user to add a LpVariable as an objective
+            #     obj = obj + 0.0
+            # try:
+            #     obj = obj.constraint
+            #     name = obj.name
+            # except AttributeError:
+            #     name = None
+            self.objective += obj
+            # self.objective.name = name
     
     def getVariables(self):
         varlist = []
@@ -828,9 +828,9 @@ class QpProblem:
             self.addConstraint(other, name)
             self.numofc += 1
         elif isinstance(other, QpExpression):
-            if self.objective is not None:
-                warnings.warn("Overwriting previously set objective.")
-            self.objective = other
+            if self.objective is None:
+                self.objective = other
+            self.objective += other
             if name is not None:
                 self.objective.name = name
         elif isinstance(other, QpVariable) or isinstance(other, (int, float)):
@@ -870,14 +870,17 @@ def main():
     # print("q = ")
     # print(b)
     # print(c)
-    # a = 3
-    # prob = QpProblem("myProblem", "CVXOPT")
-    # x = QpVariable("x", 0, 3)
-    # y = QpVariable("y", 0, 1)
-    # prob += x ** 2 * 2 + y ** 2 * 5 + ((x + y * 5) * 2) * a
-    # prob += y + x <= 3
-    # prob += x + y * 2 >= 2
-    # prob.solve()
+    a = 3
+    prob = QpProblem("myProblem", "CVXOPT")
+    x = QpVariable("x", 0, 3)
+    y = QpVariable("y", 0, 1)
+    prob += x ** 2 * 2 + y ** 2 * 5 + ((x + y * 5) * 2) * a
+    print(prob.objective)
+    prob += x * 2
+    print(prob.objective)
+    prob += y + x <= 3
+    prob += x + y * 2 >= 2
+    prob.solve()
 
     # print(prob.constraints["c0"].toDict())
     # a = np.array(([[1,2]]))
@@ -887,16 +890,16 @@ def main():
     # y = QpVariable('y', lowbound = -10, upbound = 10)
     # z = np.array((x,y)).reshape(2,1)
     # print(z)
-    c = QpMVariable("c", [2,1], 0, 3, value = 2)
-    c1 = np.asarray(c)
+    # c = QpMVariable("c", [2,1], 0, 3, value = 2)
+    # c1 = np.asarray(c)
     # d = np.array((2,2)).reshape(2,1)
     # b = QpMVariable("b", [2,2], 0, 3, value = 1)
     # b1 = np.asarray(b)
     # print(b)
     # print(type(b))
     # print(type(b1))
-    P = np.array((2, 0, 0, 2)).reshape(2,2)
-    print(c1.T)
+    # P = np.array((2, 0, 0, 2)).reshape(2,2)
+    # print(c1.T)
     # d = c1[0][0] + c1[1][1]
     # print('-----')
     # print(c1[0][0])
